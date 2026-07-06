@@ -1,0 +1,245 @@
+app:
+  description: 本项目基于Dify框架构建企业级智能客服助手，通过RAG技术对接内部知识库，实现文档自动解析与精准检索。系统支持多模型灵活切换，将员工信息检索效率提升20倍，准确率达90%以上，显著降低企业运营成本。
+  icon: 89e41054-755e-47f6-a4a3-1ef547f73115
+  icon_background: null
+  icon_type: image
+  mode: advanced-chat
+  name: 企业智能客服助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.18@ef52c8128cefe169e4ea882a8c7d92e6cf0bd4f7da75be644ab6b09a3dcfa4f4
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/ollama:1.0.0@ae50a2db261bffa7289677f2b0a60e60762ceb187b602113b72425ccbe772dc3
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1783258152712-source-llm-target
+      source: '1783258152712'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1783248342097-source-1783258152712-target
+      source: '1783248342097'
+      sourceHandle: source
+      target: '1783258152712'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 73
+      id: '1783248342097'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1783258152712'
+          - result
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: a61b2345-bd2c-4c8c-be98-1520bb76afc7
+          role: system
+          text: '你是"光明电力"公司的智能客服助手。请严格基于以下知识库内容回答用户的问题。
+
+
+            知识库内容：
+
+            {{#context#}}
+
+
+            规则：
+
+            1. 如果知识库中有相关信息，请准确引用并回答
+
+            2. 如果知识库中没有相关信息，请礼貌地告知用户"暂时没有找到相关答案，建议联系人工客服"
+
+            3. 回答要简洁、专业、友好
+
+            4. 在回答末尾，用【来源：文档名】格式标注信息来源'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: llm
+      position:
+        x: 680.782636272012
+        y: 283.2535928111464
+      positionAbsolute:
+        x: 680.782636272012
+        y: 283.2535928111464
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 102
+      id: answer
+      position:
+        x: 938.1604806930341
+        y: 283.2535928111464
+      positionAbsolute:
+        x: 938.1604806930341
+        y: 283.2535928111464
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        dataset_ids:
+        - 1qyqPdHhiK6p/vxLolEWEvRi2/FVmMdGBBF+Cm2ytxLwSBaQXOK46bAo/zXQanXl
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          top_k: 4
+          weights:
+            keyword_setting:
+              keyword_weight: 0
+            vector_setting:
+              embedding_model_name: nomic-embed-text
+              embedding_provider_name: langgenius/ollama/ollama
+              vector_weight: 1
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1783248342097'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 90
+      id: '1783258152712'
+      position:
+        x: 365.7395225382552
+        y: 283.2535928111464
+      positionAbsolute:
+        x: 365.7395225382552
+        y: 283.2535928111464
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 9.759501223878942
+      y: 13.964437290684373
+      zoom: 1.1194732671157468
+  rag_pipeline_variables: []
